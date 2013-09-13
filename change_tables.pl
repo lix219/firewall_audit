@@ -1,5 +1,6 @@
 #!/usr/bin/perl -I /home/fw_audit/script/lib
 
+use warnings;
 use Firewall::Common qw/open_db record pass/;
 use Firewall::Audit qw/subnet2range/;
 
@@ -17,7 +18,7 @@ sub change_tables{
     #change fp-service_group to cfg_ser_grp
     change_ser_grp($t_id);
     #change fp-policy to cfg_acl  
-		change_acl($t_id);
+    change_acl($t_id);
     #change fp-policy to cfg_acl_obj
     change_acl_obj($t_id);
     #save "count" in four tables
