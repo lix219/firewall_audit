@@ -6,7 +6,7 @@ use Firewall::Common qw/open_db record pass/;
 #检测telnet是否开启，规则编号2000
 sub _2000 {
 
-   #2000:detect telnet status
+    #2000:detect telnet status
     #pass 2000:telnet on
     #fail 2000:telnet off
     
