@@ -12,12 +12,19 @@ BEGIN {
     require Exporter;
 
     @ISA       = qw /Exporter/;
-    @EXPORT_OK = qw /audit subnet2range acl_schedule count_src count_dst count_ser/;
+    @EXPORT_OK = qw /connect_redis audit subnet2range acl_schedule count_src count_dst count_ser/;
     $VERSION   = '1.0001';
 }
 
 use Firewall::Common qw /record open_db pass/;
 
+
+sub connect_redis {
+	my $handle = Redis->new(server => '10.109.32.166:6379', name => 'what');
+	$handle->select(1);
+
+	return $handle;
+}
 
 sub count_src{
 	#get count of src addr objects in present two acl policies
@@ -126,9 +133,12 @@ sub acl_schedule {
         my $acl_id = shift;
 
         # 从数据库中获取原始时间对象
-        use DBI;
-        my ($host, $user, $pass, $db) = qw {10.109.32.166 root 123456 fw_audit};
-        my $dbh = DBI->connect("DBI:mysql:database=$db;host=$host", $user, $pass);
+#        use DBI;
+#        my ($host, $user, $pass, $db) = qw {10.109.32.166 root 123456 fw_audit};
+#        my $dbh = DBI->connect("DBI:mysql:database=$db;host=$host", $user, $pass);
+
+        use Firewall::Common qw /open_db/;
+        my $dbh = open_db;
 
         my $sth = $dbh->prepare("SELECT `fp-schedule`.`VALUE` 
                     FROM `fp-schedule`, `cfg_acl` 

@@ -21,7 +21,9 @@ sub _2003 {
     while(my @row_ary=$sth->fetchrow_array()){
             
         #print "@row_ary\n";
-
+				if(!defined($row_ary[0])){
+						return 1;
+				}
         if ($row_ary[0]==0){
 						pass $tid, 2003,'fail', 'web管理界面未设置IP限制';     
 						$sign_2003 == 1;
@@ -34,5 +36,5 @@ sub _2003 {
     $sth->finish();
 }
 
-#_2003 99513;
+#_2003 1025;
 1

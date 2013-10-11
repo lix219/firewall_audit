@@ -7,7 +7,7 @@ use Redis;
 use utf8;
 
 use Firewall::Common qw /record open_redis open_db pass/;
-use Firewall::Audit qw /acl_schedule count_ser/;
+use Firewall::Audit qw /acl_schedule count_ser connect_redis/;
 
 sub ip2num_3306 {
 	my $ip = shift;
@@ -32,12 +32,12 @@ sub num2ip_3306 {
   return join('.', @ip);
 }
 
-sub connect_redis_3306 {
-	my $handle = Redis->new(server => '10.109.32.166:6379', name => 'what');
-	$handle->select(1);
-
-	return $handle;
-}
+#sub connect_redis {
+#	my $handle = Redis->new(server => '10.109.32.166:6379', name => 'what');
+#	$handle->select(1);
+#
+#	return $handle;
+#}
 
 
 sub compare_acl_policy_3306 {
@@ -47,7 +47,7 @@ sub compare_acl_policy_3306 {
 	my $acl_policy1 = "acl_policy"."_set_$index1";
 	my $acl_policy2 = "acl_policy"."_set_$index2";
 
-	my $redis_handle = connect_redis_3306;
+	my $redis_handle = connect_redis;
 	my @acl_policy_set1 = $redis_handle->smembers($acl_policy1);
 	my @acl_policy_set2 = $redis_handle->smembers($acl_policy2);
 
@@ -83,7 +83,7 @@ sub inter_srv_3306 {
 	my $srv1 = "srv"."_set_$index1";
 	my $srv2 = "srv"."_set_$index2";
 
-	my $redis_handle = connect_redis_3306;
+	my $redis_handle = connect_redis;
 	my @srv_set1 = $redis_handle->smembers($srv1);
 	my @srv_set2 = $redis_handle->smembers($srv2);
 
@@ -133,7 +133,7 @@ sub compare_src_addr_3306 {
 	my $src_addr_set2 = "src_addr"."_set_$index2";
 	my $interset = "$src_addr_set1"."_$src_addr_set2";
 
-	my $redis_handle = connect_redis_3306;
+	my $redis_handle = connect_redis;
 
 	my $ret = $redis_handle->sinterstore($interset,$src_addr_set1,$src_addr_set2);
 
@@ -161,7 +161,7 @@ sub compare_dst_addr_3306 {
 
 	my $interset = "$dst_addr_set1"."_$dst_addr_set2";
 
-	my $redis_handle = connect_redis_3306;
+	my $redis_handle = connect_redis;
 
 	my $ret = $redis_handle->sinterstore($interset,$dst_addr_set1,$dst_addr_set2);
 
@@ -185,18 +185,18 @@ sub compare_dst_addr_3306 {
 sub _3306 {
  	my $task_id = shift;
 	my $sign_3306 = 0;
-	my $host = '10.109.32.166';
-	my $port = "3306";
-	my $user = 'root';
-	my $password = '123456';
-	my $dbname = 'fw_audit';
-
-	my $redis_handle = connect_redis_3306;
-
-	my $database = "DBI:mysql:$dbname:$host:$port";
-	my $dbh = DBI->connect($database, $user, $password);
-	$dbh->do("SET NAMES 'utf8'");
-
+#	my $host = '10.109.32.166';
+#	my $port = "3306";
+#	my $user = 'root';
+#	my $password = '123456';
+#	my $dbname = 'fw_audit';
+#
+	my $redis_handle = connect_redis;
+#
+#	my $database = "DBI:mysql:$dbname:$host:$port";
+#	my $dbh = DBI->connect($database, $user, $password);
+#	$dbh->do("SET NAMES 'utf8'");
+	my $dbh = open_db;
  	my $sth = $dbh->prepare("SELECT acl_id, src_addr, dst_addr, srv, acl_policy FROM cfg_acl WHERE task_id = $task_id");
  	$sth->execute() or die "Can't execute: $dbh->errstr";
 

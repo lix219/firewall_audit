@@ -76,7 +76,7 @@ sub _4203{
             my @iparr=();
             #my %net_hash_4203=;
             my @arr = split(/\s+/,$row_ary[1]); #array of single ip or range or subnet in present net object
-            foreach my $net_ip(@arr){
+            foreach my $net_ip(@arr) {
                 #print "test1\n";
                 if($net_ip =~ /any/i){  #any
                     #print "any\n";
@@ -92,10 +92,10 @@ sub _4203{
 
                 if(!($net_ip =~ /</)){
                     if ($net_ip =~ /(.*)-(.*)/) {   #range or subnet without breakpoint
-                            
+
                             my $begin = ip2num($1);
                             my $end = ip2num($2);
-
+print "[$1]$begin--[$2]$end\n";
                             foreach($begin..$end){                                
                                 push @iparr,num2ip($_);
                             }
@@ -141,7 +141,6 @@ sub _4203{
     foreach my $key (keys %net_hash_4203) {
         push @array, $key;
     }
-
     #my $n=$#array;
     #print "$n\n";
 
@@ -171,5 +170,5 @@ sub _4203{
     $sth->finish();
 }
 
-#_4203 2038;
+#_4203 14;
 1

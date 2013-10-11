@@ -193,7 +193,7 @@ sub change_ser_grp{
         $sth_ser->finish();              
     }
 
-    print "cfg_acl_obj finished\n";
+    print "cfg_ser_grp finished\n";
     $sth->finish();
     $dbh->disconnect;
 }
@@ -378,7 +378,6 @@ sub change_acl_obj{
 
 #save field "count"
 sub save_count{
-    #change fp-address to cfg_net
     my $tid = shift;
     my $dbh = open_db;
 

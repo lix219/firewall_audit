@@ -1,0 +1,1 @@
+redis 和 mysql连接方式改好的
